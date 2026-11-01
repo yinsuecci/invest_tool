@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; connect-src 'none'; base-uri 'none'; form-action 'none'">
+<title>定投实验室 | 现货额度研究</title>
+<style>
+:root{--paper:#f5f3eb;--ink:#202a25;--muted:#647069;--line:#d8ded4;--accent:#365b3e;--soft:#e5ebdf;--warn:#865c2b;--bad:#974a3f;--white:#fffef9}
+*{box-sizing:border-box}body{margin:0;color:var(--ink);background:var(--paper);font-family:"Microsoft YaHei","PingFang SC",sans-serif;font-size:14px;line-height:1.7;background-image:repeating-linear-gradient(90deg,transparent,transparent 79px,#d8ded429 80px)}
+main{max-width:1230px;margin:0 auto;padding:36px 32px 64px}header{border-top:3px solid var(--ink);padding-top:18px;display:flex;justify-content:space-between;gap:24px;align-items:start}.eyebrow{letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-size:11px}h1{font-family:Georgia,"Songti SC",serif;font-size:32px;line-height:1.3;font-weight:normal;margin:10px 0}h2{font-size:18px;margin:0 0 12px}h3{font-size:14px;margin:0 0 6px}p{margin:6px 0 14px}.sub{color:var(--muted);max-width:760px}.badge{display:inline-block;font-size:12px;padding:4px 10px;background:var(--soft);color:var(--accent);white-space:nowrap}.warning{color:var(--warn)}
+.toolbar{display:flex;align-items:center;justify-content:space-between;gap:20px;margin:28px 0 20px;padding-bottom:16px;border-bottom:1px solid var(--line);flex-wrap:wrap}.tabs{display:flex;gap:6px;flex-wrap:wrap}button,select{font:inherit;border:1px solid var(--line);background:var(--white);color:var(--ink);padding:9px 15px;cursor:pointer}button[aria-selected=true]{background:var(--ink);color:var(--white);border-color:var(--ink)}button:hover{border-color:var(--accent)}button:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-offset:3px}label{color:var(--muted)}.control{display:flex;gap:10px;align-items:center}
+.identity{display:grid;grid-template-columns:1.8fr 1fr;gap:28px;margin:24px 0}.identity strong{font-family:Georgia,serif;font-size:26px;font-weight:normal}.meta{font-size:12px;color:var(--muted)}.ribbon{border-left:3px solid var(--accent);padding:8px 16px;background:var(--soft)}.stats{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line);background:var(--white);margin:18px 0 30px}.stat{padding:18px;border-right:1px solid var(--line)}.stat:last-child{border:0}.stat b{display:block;font-family:Georgia,serif;font-weight:normal;font-size:24px}.stat span{color:var(--muted);font-size:12px}
+.table-wrap{overflow:auto;background:var(--white);border:1px solid var(--line)}table{width:100%;border-collapse:collapse;white-space:nowrap;text-align:left;font-size:13px}th{font-size:11px;color:var(--muted);font-weight:normal;letter-spacing:.5px;background:var(--soft)}td,th{padding:14px 13px;border-bottom:1px solid var(--line)}tr:last-child td{border:0}tbody tr{cursor:pointer}tbody tr:hover,tbody tr.selected{background:#edf0e6}td small{display:block;color:var(--muted)}.good{color:var(--accent)}.bad{color:var(--bad)}.muted{color:var(--muted)}.grid{display:grid;grid-template-columns:1.55fr 1fr;gap:28px;margin-top:30px}.panel{background:var(--white);border:1px solid var(--line);padding:22px}.line{border-bottom:1px solid var(--line);margin:16px 0}.detail-row{display:flex;justify-content:space-between;gap:15px;margin:8px 0}.detail-row span:first-child{color:var(--muted)}.legend{display:flex;gap:20px;font-size:12px;margin:10px 0}.legend span:before{content:"";display:inline-block;width:20px;height:2px;background:var(--accent);vertical-align:middle;margin-right:6px}.legend span:last-child:before{background:#89958d}.chart{width:100%;height:auto;max-height:330px;display:block}.caption{font-size:11px;color:var(--muted)}.empty{padding:35px 0;color:var(--warn)}details{border-top:1px solid var(--line);padding:18px 0;margin-top:18px}summary{cursor:pointer;font-weight:bold}ol,ul{padding-left:22px}li{margin:7px 0}code{font-family:Consolas,monospace;font-size:12px}footer{margin-top:30px;font-size:12px;color:var(--muted)}.formula{white-space:pre-wrap;font-family:Consolas,"Microsoft YaHei",monospace;background:var(--soft);padding:16px;font-size:12px}.note{font-size:12px;color:var(--muted)}a{color:var(--accent)}
+@media(max-width:760px){main{padding:22px 16px}header{display:block}header>.badge{margin-top:10px}h1{font-size:28px}.identity,.grid{grid-template-columns:1fr;gap:18px}.stats{grid-template-columns:repeat(2,1fr)}.stat{border-bottom:1px solid var(--line)}.stat:nth-child(2){border-right:0}.toolbar{align-items:start}.panel{padding:16px}.stat b{font-size:21px}}
+@media(prefers-reduced-motion:no-preference){main{animation:reveal .4s ease-out}@keyframes reveal{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}}
+</style>
+<style>[hidden]{display:none!important}.grid>*,.identity>*{min-width:0}code,.detail-row span{overflow-wrap:anywhere}.buy-legend b:nth-child(2){color:var(--warn)}.metric-control{flex-wrap:wrap}
+.execution{margin:30px 0}.execution .toolbar{margin:12px 0;justify-content:flex-start;gap:12px}.execution input{font:inherit;max-width:100%;padding:8px;border:1px solid var(--line);background:var(--white);color:var(--ink)}.k-scroll{overflow:auto;border:1px solid var(--line);background:var(--white)}.k-chart{display:block;width:100%;min-width:850px}.buy-legend{display:flex;gap:22px;flex-wrap:wrap;margin:10px 0;font-size:12px}.buy-legend b{color:var(--accent)}.buy-legend b:last-child{color:var(--warn)}.comparison td:first-child{white-space:normal}.comparison tbody tr{cursor:default}.order-scroll{max-height:320px;overflow:auto}.order-scroll th{position:sticky;top:0}.selected-order{background:var(--soft)}.k-marker{cursor:pointer}.k-marker:focus{outline:2px solid var(--ink)}.error{color:var(--bad)}.range-summary{margin:12px 0}.metric-control{margin-bottom:12px}.comparison{margin-top:16px}@media(max-width:760px){.execution .control{flex-wrap:wrap}.execution .toolbar{gap:8px}.execution input{width:146px}}
+.tv-host{overflow:hidden;padding:10px;min-width:0}.tv-surface{width:100%;height:550px}.tv-price-title{font-size:12px;color:var(--muted);margin:0 0 8px}.tv-host p{margin:8px 0 0}.tv-license{white-space:pre-wrap;overflow-wrap:anywhere;font-size:11px}@media(max-width:760px){.tv-surface{height:500px}}
+</style>
+</head>
+<body>
+<main>
+<header><div><div class="eyebrow">DCA LAB / EXPERIMENT 001</div><h1>先验证，再增加复杂度。</h1><p class="sub">三个币安现货标的，逐项加入额度指标。每一项都与上一阶段使用相同日期、资金流和费用比较；没有证据，就保留等额定投。</p></div><span class="badge">只读研究版 · 未启用实盘</span></header>
+<div class="toolbar"><div class="tabs" role="tablist" aria-label="投资标的" id="assets"></div><div class="control"><label for="period">评估区间</label><select id="period"><option value="holdout">留出测试 20%</option><option value="validation">验证区间 20%</option><option value="development">开发区间 60%</option></select></div></div>
+<section class="identity"><div><div class="eyebrow" id="identity-label"></div><strong id="symbol"></strong><p class="meta" id="coverage"></p><p class="note" id="asset-note"></p></div><div class="ribbon"><b>当前默认：等额基准</b><p class="note">这里的候选只是探索性结论，不会自动更改策略或下单。短历史标的不会借用美股、黄金现货或合约数据补齐。</p></div></section>
+<div class="stats" id="stats"></div>
+<section><h2>增量实验记录</h2><p class="note">正数表示单位持仓成本下降。不同实验可能因预热长度而使用不同日期，不能跨行直接排名；点击行查看同区间的对照。</p><div class="table-wrap"><table><thead><tr><th>新增模块 / 对照</th><th>配对日数</th><th>日均成本改善</th><th>探索性 95% 区间</th><th>回撤变化</th><th>结论</th></tr></thead><tbody id="experiments"></tbody></table></div></section>
+<section class="execution" aria-labelledby="execution-title"><h2 id="execution-title">K 线上的买入位置与额度</h2><p class="note" id="execution-explainer">当前实验固定每天相同时间买入，只调整金额，不是择时策略。圆点为策略、菱形为等额定投，面积随实际本金变化；同一时点左右错开仅为辨识，不代表时间差。点击标记或明细行查看成交依据。</p>
+<div class="control" id="baseline-control" hidden><label for="baseline-frequency">普通定投基准</label><select id="baseline-frequency"><option value="four">每天固定 4 次</option><option value="once">每天固定 1 次（00时）</option><option value="matched" id="matched-option" hidden>相同动用预算 · 固定4次</option></select></div><div id="adaptive-evidence"></div>
+<div class="toolbar"><div class="control"><label for="range-start">开始日期</label><input id="range-start" type="date"></div><div class="control"><label for="range-end">结束日期</label><input id="range-end" type="date"></div><div class="control"><label for="candle-unit">K 线周期</label><select id="candle-unit"><option value="1">1 小时</option><option value="4">4 小时</option><option value="24">1 日</option></select></div><button id="range-prev" type="button">前 7 日</button><button id="range-next" type="button">后 7 日</button></div>
+<p id="range-error" class="error" role="status"></p><div class="buy-legend"><b>● 当前策略买入</b><b>◆ 基础等额买入</b><span>红涨绿跌 · 价格 USDT · 时间 UTC+8</span></div><div class="k-scroll" id="candles"></div><p class="caption" id="candle-caption"></p><div class="ribbon" id="selected-fill" aria-live="polite"></div><p class="note range-summary" id="range-summary"></p>
+<div class="table-wrap order-scroll"><table><thead><tr><th>买入时间 UTC+8</th><th>策略本金 / 基础本金 USDT</th><th>策略数量 / 基础数量</th><th>含滑点成交价 USDT</th><th>策略信号</th><th>执行结果</th></tr></thead><tbody id="order-rows"></tbody></table></div>
+<h3 style="margin-top:24px">完整评估区间：当前策略 vs 基础等额定投</h3><p class="note" id="baseline-caption"></p><div class="table-wrap comparison"><table><thead><tr><th>指标</th><th>基础等额</th><th>当前策略</th><th>策略 − 基础</th></tr></thead><tbody id="baseline-metrics"></tbody></table></div></section>
+<div class="grid"><section class="panel"><h2 id="chart-title">资金流调整净值</h2><div class="control metric-control"><label for="curve-metric">曲线指标</label><select id="curve-metric"><option value="twr_index">资金流调整净值</option><option value="quantity">累计持仓数量</option><option value="unit_cost">累计含费单位成本</option><option value="position_fraction" id="position-option" hidden>实际持仓占净值比例</option></select><label for="curve-reference">对照</label><select id="curve-reference"><option value="baseline">基础等额</option><option value="previous">上一阶段</option></select></div><div class="legend"><span>当前策略</span><span id="reference-label">基础等额</span></div><div id="chart"></div><p class="caption" id="chart-caption"></p></section><section class="panel"><h2 id="detail-title">实验详情</h2><div id="detail"></div></section></div>
+<div class="grid"><section><h2>计算规则</h2><div class="formula">D = clip((EMA24 − P) / (2 × ATR14), −1, 1)
+M = clip((50 − RSI14) / 30, −1, 1)
+S = 0.7 × D + 0.3 × M
+趋势偏弱：只把正向 S 减半
+波动偏高：缩小 S 的幅度，不扩大日预算
+建议金额 = 剩余预算 / 剩余次数 × (1 + α × S)
+计划金额 = 单笔边界与剩余计划预算可行域约束
+实际成交 = 按数量步长向下取整，尾差留现金</div><p class="note">“仅偏离”阶段直接用 D；RSI 阶段开始使用组合分数。所有权重固定，不在留出集调参。</p></section><section><h2>启用门槛</h2><p>验证至少 28 个配对日，留出至少 56 个配对日；留出日均成本改善大于 2 bp，7 日块自助区间下界大于零，且执行率、回撤和成本压力情景全部过关。</p><p class="note">通过也只进入新的前向模拟。多重比较尚未校正，当前留出集公开后不能反复用作“独立验证”。</p><p class="note">1 bp = 0.01%。回撤变化为正代表回撤减轻；净值包含闲置资金、买入费和滑点，不等于实盘总回报。</p><button id="download" type="button">导出研究 JSON</button></section></div>
+<details><summary>数据来源、复现参数与边界</summary><div id="config"></div><ul id="limitations"></ul><p><a href="https://developers.binance.com/en/docs/products/spot/rest-api" target="_blank" rel="noreferrer">币安现货 API 文档</a> · <a href="https://www.binance.com/en/trade/GOOGLB_USDT" target="_blank" rel="noreferrer">谷歌代币化现货</a> · <a href="https://www.binance.com/en/trade/XAUT_USDT" target="_blank" rel="noreferrer">黄金代币现货</a></p></details>
+<details id="tv-attribution" hidden><summary>TradingView 图表署名与许可</summary><p><a href="https://www.tradingview.com/" target="_blank" rel="noreferrer">TradingView</a> Lightweight Charts™ 5.2.1 · Apache-2.0 · 本地数据集成，并非tradingview.com网页或真实订单同步。</p><pre class="tv-license">__CHART_NOTICE__</pre></details><footer id="footer"></footer>
+</main>
+<script id="report-data" type="application/json">__REPORT_PAYLOAD__</script>
+<script>__CHART_LIBRARY__</script>
+<script>__CHART_ADAPTER__</script>
+<script>
+'use strict';
+const report=JSON.parse(document.getElementById('report-data').textContent);
+const state={asset:'GOOG',period:'holdout',edge:0,rangeKey:null,selected:null};
+const $=id=>document.getElementById(id);
+const fmt=(v,n=2)=>v===null||v===undefined?'不可评估':Number(v).toLocaleString('zh-CN',{minimumFractionDigits:n,maximumFractionDigits:n});
+const escapeHtml=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const sign=v=>v===null?'muted':v>=0?'good':'bad';
+function displayPeriod(p){const choice=$('baseline-frequency').value;if(p&&choice==='matched'&&p.matched_baseline)return {...p,baseline:p.matched_baseline,vs_equal:p.vs_matched,visual_orders:{...p.visual_orders,baseline:p.visual_orders.matched}};return p&&choice==='once'&&p.baseline_once?{...p,baseline:p.baseline_once,vs_equal:p.vs_once,visual_orders:{...p.visual_orders,baseline:p.visual_orders.baseline_once}}:p;}
+function pairedOrders(p){
+ const current=new Map(p.visual_orders.current.map(o=>[o[0],o])),base=new Map(p.visual_orders.baseline.map(o=>[o[0],o]));
+ const empty=t=>[t,null,0,0,0,null,null,'not_scheduled'];
+ return [...new Set([...current.keys(),...base.keys()])].sort().map((t,i)=>({o:current.get(t)||empty(t),b:base.get(t)||empty(t),i,t:Date.parse(t)}));
+}
+function adaptiveEvidence(edge,p){
+ $('baseline-control').hidden=!report.adaptive;
+ if(!report.adaptive)return;
+ document.querySelector('header .eyebrow').textContent='DCA LAB / EXPERIMENT 003 / FROZEN PROTOCOL';
+ document.querySelector('header h1').textContent='让波动决定分批，而不是让回测决定答案。';
+ document.querySelector('header .sub').textContent='每日1–4次，先用前日闭合数据决定次数，再逐项评估低位等待与额度倾斜。普通1次与4次双基准，全量保留失败结果。';
+ $('period').options[0].textContent='历史末段 20%（非独立留出）';$('period').options[1].textContent='历史中段 20%';$('period').options[2].textContent='历史前段 60%';
+ document.querySelector('.ribbon b').textContent='当前默认：固定4次普通定投';
+ $('execution-explainer').textContent='次数在当日00:00前确定；时刻可在各窗口内按上一小时闭合信号选择，未触发则窗口末小时兜底。圆点为策略，菱形为所选普通定投，面积随实际本金变化；同一时点左右错开仅为辨识。点击标记查看当日次数、波动倍数和触发依据。';
+ document.querySelector('.formula').textContent='当日相对波动 q = 前一闭合小时 ATR14 / 价格 ÷ 前720小时该比值中位数\nq < 0.75：1次；0.75 ≤ q < 1：2次\n1 ≤ q < 1.5：3次；q ≥ 1.5：4次\n自然日均分 n 个窗口（UTC+8），当日次数不事后改变\n第一步：在窗口起始小时等额买入\n第二步：上一小时 0.7D + 0.3M ≥ 0.25 则买；否则窗口末小时兜底\n第三步：在相同择时上加入±30%额度倾斜\n单笔中心 = 当日本金预算 / n；日预算始终不变\nD、M仍为EMA/ATR偏离与RSI指标，不使用未来最低价';
+ document.querySelector('.formula + p').textContent='三个新增模块依次对上一阶段做消融；所有阈值在本轮回测前冻结，无网格搜索、无历史末段调参。次数分布来自全区间而非挑选单日。';
+ const gateHeading=[...document.querySelectorAll('h2')].find(e=>e.textContent==='启用门槛');
+ if(gateHeading){gateHeading.nextElementSibling.textContent='显著优势目标：同时相对固定1次和4次基准，累计含费单位成本下降≥50bp（0.5%），净值增益/累计注资≥0.5%，验证日均改善为正、历史末段至少90个配对日、置信区间下界为正；回撤不恶化超过0.2个百分点、执行率不恶化超过0.1个百分点、各费用情景改善为正。';gateHeading.nextElementSibling.nextElementSibling.textContent='全部现有历史已被查看，历史达标也不启用实盘。至少再观察90个全新前向日后复核。60日顺序分块仅展示稳定性，不是独立样本外证明。';}
+ if(!p){$('adaptive-evidence').textContent='';return;}
+ const distribution=Object.entries(p.count_distribution).map(([n,days])=>`${n}次：${days}天`).join(' / '),base=$('baseline-frequency').value==='once'?'once':'four';
+ const rows=p.stability[base].map(b=>`<tr><td>${b.start} 至 ${b.end}</td><td>${b.days}</td><td>${fmt(b.mean_cost_gain_bps)} bp</td><td>${b.ci95_bps?b.ci95_bps.map(v=>fmt(v)).join(' 至 '):'不足7日'}</td></tr>`).join('');
+ $('adaptive-evidence').innerHTML=`<p><span class="badge">已看过历史 · 探索性回测</span></p><p><b>本区间每日次数分布：</b>${escapeHtml(distribution)}</p><p class="note">对固定4次累计成本改善 ${fmt(p.vs_equal.aggregate_cost_gain_bps)} bp；对固定1次改善 ${fmt(p.vs_once.aggregate_cost_gain_bps)} bp。正数更便宜；以上不是预期未来收益。</p><details><summary>60日顺序分块与单次买入时刻敏感性</summary><p class="note">当前所选区间，相对${base==='once'?'固定1次':'固定4次'}的日均含费单位成本改善；不重新拟合、不挑选月份，各块可能不足60日。</p><div class="table-wrap"><table><thead><tr><th>日期（UTC+8）</th><th>日数</th><th>日均成本改善</th><th>95%探索区间（bp）</th></tr></thead><tbody>${rows}</tbody></table></div><p class="note">以下为历史末段固定1次基准，改变买入时刻的敏感性：</p>${Object.entries(edge.once_anchor_sensitivity).map(([h,v])=>row(h.padStart(2,'0')+':00 基准',fmt(v.aggregate_cost_gain_bps)+' bp 累计成本改善')).join('')}<p class="meta">冻结协议 SHA-256：<code>${escapeHtml(report.adaptive.sha256)}</code></p><p><a href="https://www.davidhbailey.com/dhbpapers/backtest-prob.pdf" target="_blank" rel="noreferrer">方法参考：回测过拟合研究</a></p></details>`;
+}
+function row(label,value){return `<div class="detail-row"><span>${escapeHtml(label)}</span><span>${escapeHtml(value)}</span></div>`;}
+function reversalEvidence(edge,p){
+ $('matched-option').hidden=!report.reversal;$('position-option').hidden=!report.reversal;$('tv-attribution').hidden=!report.chart_engine;
+ if(!report.reversal)return;
+ document.querySelector('header .eyebrow').textContent='DCA LAB / EXPERIMENT 004 / RSI + REVERSAL + EXPOSURE';
+ document.querySelector('header h1').textContent='确认回升再买，仓位与买点分开检验。';
+ document.querySelector('header .sub').textContent='每日计划1–4次。逐项比较RSI回升、探底回收、EMA168偏离额度及现金仓位，使用TradingView官方开源图表显示真实历史和模拟买点。';
+ document.querySelector('#stats .stat:first-child span').textContent='每标的每日新增资金';document.querySelector('#stats .stat:nth-child(3) b').textContent='动用本金 ÷ 次数 / ±30%';
+ $('execution-explainer').textContent='绿色向上箭头：策略；棕色圆点：所选基准。标记在含滑点模拟成交价上，较大K线周期按实际数量加权合并。主图叠加EMA72和EMA168，下方是闭合小时RSI14（0–100）；可缩放、拖动、使用十字光标，点击K线或明细查看RSI、均线偏离及触发依据。全程本地，不上传TradingView账户。';
+ document.querySelector('.buy-legend b').textContent='↑ 当前策略模拟买入';document.querySelector('.buy-legend b:nth-child(2)').textContent='● 基准模拟买入';
+ document.querySelector('.formula').textContent='次数仍由日初相对ATR波动决定（1–4次）\nRSI回升：此前3根闭合RSI最低≤35，本根回升≥2且收盘上涨\n探底回收：低点跌破此前12小时最低，收盘收回支撑、阳线且RSI不下降\n锤线确认：前一根下影≥2倍实体且≥50%振幅、收盘在上40%、RSI≤40；本根收盘超过前高且RSI上升\n以上信号只用已收盘数据；未触发则在窗口末小时兜底\nEMA额度分数 = 0.55×长期均线偏离 + 0.30×RSI动量 + 0.15×已确认回升\n长期偏离 = clip((EMA168−收盘)/(2×ATR14), −1, 1)\n仓位软目标 = clip(80% + 10%×长期偏离 − 15%×(RSI−50)/50, 60%,95%)\n仓位模块：当天动用新增资金25%–100%，其余留现金\n不卖出已有资产，不追补累计现金，单笔中心按实际动用预算/次数计算';
+ document.querySelector('.formula + p').textContent='前一闭合小时信号决定下一小时开盘模拟买入；锤线须等待确认收盘，不在未来最低点倒填买点。仓位目标是买入侧软目标，上涨时实际仓位可能超过目标。';
+ const gateHeading=[...document.querySelectorAll('h2')].find(e=>e.textContent==='启用门槛');
+ if(gateHeading)gateHeading.nextElementSibling.textContent='成本与完整账户净值仍须同时相对普通1次、4次基准过关。现金模块允许主动降低动用率，但至少动用25%预算（成交量化有尾差），并要求优于相同动用预算对照，不能用少买换来的低均价宣称胜出。其他模块仍限制执行率、回撤、压力情景和样本量。';
+ if(!p)return;
+ const triggerNames={rsi_rebound:'RSI回升',sweep_reclaim:'探底回收',hammer_confirmation:'锤线确认',window_deadline:'窗口末兜底',low_signal:'旧低位分数'};
+ const counts=Object.entries(p.trigger_distribution).map(([k,v])=>`${triggerNames[k]||k} ${v}次`).join(' / ');
+ const extra=document.createElement('div');
+ extra.innerHTML=`<p><b>触发统计：</b>${escapeHtml(counts)}</p><p class="note">日均计划动用 ${fmt(p.day_deployment_mean)} / 注资 ${fmt(report.config.daily_total)} USDT。普通4次净值差 ${fmt(p.current.equity-p.baseline.equity)} USDT；普通1次净值差 ${fmt(p.current.equity-p.baseline_once.equity)} USDT。</p><p class="note">相同动用预算对照：累计成本改善 ${fmt(p.vs_matched.aggregate_cost_gain_bps)} bp；净值差 ${fmt(p.current.equity-p.matched_baseline.equity)} USDT。成本改善和实际净值必须一起看。</p>`;
+ $('adaptive-evidence').append(extra);
+}
+function chart(current,previous){
+ const metric=$('curve-metric').value,metricLabel={twr_index:'资金流调整净值指数（初始 100）',quantity:'累计持仓数量（标的单位）',unit_cost:'累计含费单位成本（USDT / 单位）',position_fraction:'实际持仓占净值比例（%）'}[metric];
+ const value=p=>metric==='unit_cost'?(p.quantity?p.spent_with_fees/p.quantity:0):metric==='position_fraction'?p.position_fraction*100:p[metric];
+ const series=[current.curve,previous.curve], values=series.flatMap(s=>s.map(value));
+ const W=720,H=300,L=62,R=20,T=16,B=50;
+ let low=Math.min(...values),high=Math.max(...values);if(high-low<.01){low-=.5;high+=.5;}
+ const y=v=>T+(high-v)/(high-low)*(H-T-B);const x=i=>L+i/Math.max(current.curve.length-1,1)*(W-L-R);
+ let html=`<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="当前策略与所选对照的${metricLabel}，横轴日期">`;
+ for(let i=0;i<5;i++){const v=low+(high-low)*i/4,yy=y(v);html+=`<line x1="${L}" x2="${W-R}" y1="${yy}" y2="${yy}" stroke="#d8ded4"/><text x="${L-8}" y="${yy+4}" text-anchor="end" font-size="11" fill="#647069">${fmt(v,1)}</text>`;}
+ series.forEach((s,i)=>{html+=`<polyline fill="none" stroke="${i?'#89958d':'#365b3e'}" stroke-width="${i?1.6:2.3}" points="${s.map((p,j)=>`${x(j)},${y(value(p))}`).join(' ')}"/>`;});
+ html+=`<text x="${L}" y="${H-26}" font-size="11" fill="#647069">${current.start}</text><text x="${W-R}" y="${H-26}" text-anchor="end" font-size="11" fill="#647069">${current.end}</text><text x="${W/2}" y="${H-4}" text-anchor="middle" font-size="11" fill="#647069">日期（UTC+8）</text><text transform="translate(14,150) rotate(-90)" text-anchor="middle" font-size="11" fill="#647069">${metricLabel}</text></svg>`;return html;
+}
+const DAY=86400000,HOUR=3600000,ZONE=8*HOUR;
+const localTime=t=>new Date(t+ZONE).toISOString().slice(0,16).replace('T',' ');
+const dayMs=d=>Date.parse(d+'T00:00:00+08:00');
+const dayString=t=>localTime(t).slice(0,10);
+function baselineMetrics(p){
+ const b=p.baseline,c=p.current;
+ $('baseline-caption').textContent=`${c.start} 至 ${c.end}，${c.days} 个完整评估日；相同初始资金、每日注资、费用和数量规则。${report.adaptive?'基准按固定时刻买入；策略可改变次数与时刻。':'双方买入时刻相同。'}以下不是上方局部 K 线窗口的收益。`;
+ const metrics=[['累计投入（USDT）','contributed',2,1],['买入本金（USDT）','spent',2,1],['手续费（USDT）','fees',4,1],['累计持仓（单位）','quantity',6,1],['含费单位成本（USDT / 单位）','unit_cost',6,1],['闲置现金（USDT）','cash',4,1],['期末资产净值（USDT）','equity',2,1],['损益（USDT，含现金）','profit',2,1],['资金流调整收益（%）','twr_return',4,100],['最大回撤（%，负数）','max_drawdown',4,100],['资金执行率（%）','execution_rate',4,100],['未成交批次','skipped_slots',0,1]];
+ $('baseline-metrics').innerHTML=metrics.map(([label,key,n,m])=>`<tr><td>${label}</td><td>${fmt(b[key]===null?null:b[key]*m,n)}</td><td>${fmt(c[key]===null?null:c[key]*m,n)}</td><td>${fmt(b[key]===null||c[key]===null?null:(c[key]-b[key])*m,n)}</td></tr>`).join('');
+}
+function showFill(index){
+ const p=displayPeriod(report.assets[state.asset].edges[state.edge].periods[state.period]),pair=pairedOrders(p)[index],o=pair?.o,b=pair?.b;
+ if(!o)return;state.selected=index;
+ const adaptive=report.adaptive&&o[8]?` · 当日计划 ${o[8]} 次，前日收盘相对波动 ${fmt(o[9],3)} 倍 · 触发 ${({scheduled:'按计划',low_signal:'低位信号',window_deadline:'窗口截止兜底',rsi_rebound:'RSI回升',sweep_reclaim:'探底回收',hammer_confirmation:'锤线确认'})[o[10]]||o[10]}${o[11]!==null&&o[11]!==undefined?'，择时参考值 '+fmt(o[11],4):''}`:'';
+ const extended=report.reversal&&o[12]!==undefined?` · RSI14 ${fmt(o[12])}，EMA168归一化偏离 ${fmt(o[13],4)} · 当日动用预算 ${fmt(o[14])} USDT${o[15]!==null?'，仓位软目标 '+fmt(o[15]*100)+'%':''}`:'';
+ $('selected-fill').textContent=`${localTime(Date.parse(o[0]))} · ${o[7]==='not_scheduled'?'此时策略未计划买入':'仅使用此时之前已收盘小时的指标，额度信号 '+fmt(o[6],4)}${adaptive}${extended} · 策略计划 ${o[1]===null?'未计划':fmt(o[1],4)} / 实际本金 ${fmt(o[2],4)} USDT，基础本金 ${fmt(b[2],4)} USDT · 策略数量 ${fmt(o[4],8)} / 基础 ${fmt(b[4],8)} · 手续费 ${fmt(o[3],5)} USDT · ${o[7]==='not_scheduled'?'只有基准买入':o[7]?'未成交：'+o[7]:'模拟成交，非真实订单'}。`;
+ document.querySelectorAll('[data-order-row]').forEach(r=>r.classList.toggle('selected-order',Number(r.dataset.orderRow)===index));
+}
+function renderCandles(){
+ if(window.DcaTradingView)window.DcaTradingView.destroy();
+ const a=report.assets[state.asset],p=displayPeriod(a.edges[state.edge].periods[state.period]);
+ if(!p){$('candles').innerHTML='<p class="empty">完整预热后的样本不足，当前模块无可展示的买入记录。</p>';['candle-caption','selected-fill','order-rows','range-summary','baseline-metrics','baseline-caption'].forEach(id=>$(id).textContent='');$('range-error').textContent='';return;}
+ baselineMetrics(p);
+ const key=[state.asset,state.edge,state.period].join('/');
+ if(state.rangeKey!==key){state.rangeKey=key;state.selected=null;$('range-start').value=dayString(Math.max(dayMs(p.current.start),dayMs(p.current.end)-6*DAY));$('range-end').value=p.current.end;}
+ for(const id of ['range-start','range-end']){$(id).min=p.current.start;$(id).max=p.current.end;}
+ const start=dayMs($('range-start').value),end=dayMs($('range-end').value)+DAY;
+ const error=!Number.isFinite(start)||!Number.isFinite(end)||end<=start?'请选择有效的起止日期。':end-start>31*DAY?'单次最多展示 31 日，请缩小范围以便辨识买入点。':start<dayMs(p.current.start)||end>dayMs(p.current.end)+DAY?'日期必须位于当前完整评估区间内。':'';
+ $('range-error').textContent=error;if(error){$('candles').innerHTML='';$('order-rows').innerHTML='';$('selected-fill').textContent='';$('range-summary').textContent='';$('candle-caption').textContent='';return;}
+ const unit=Number($('candle-unit').value)*HOUR,raw=a.candles.filter(b=>b[0]>=start&&b[0]<end),groups=new Map();
+ for(const b of raw){const bucket=Math.floor((b[0]+ZONE)/unit)*unit-ZONE;let g=groups.get(bucket);if(!g){g=[bucket,b[1],b[2],b[3],b[4],b[5],0];groups.set(bucket,g);}g[2]=Math.max(g[2],b[2]);g[3]=Math.min(g[3],b[3]);g[4]=b[4];g[5]+=b[5];g[6]++;}
+ const candles=[...groups.values()],orders=pairedOrders(p).filter(x=>x.t>=start&&x.t<end);
+ const W=1120,H=440,L=86,R=24,T=24,B=66,prices=candles.flatMap(b=>[b[2],b[3]]).concat(orders.flatMap(({o,b})=>[o[5],b[5]]).filter(v=>v!==null));
+ if(!prices.length){$('candles').innerHTML='<p class="empty">此窗口无真实行情，不补齐缺失数据。</p>';return;}
+ let low=Math.min(...prices),high=Math.max(...prices),pad=(high-low)*.12||high*.01;low-=pad;high+=pad;
+ const x=t=>L+(t-start)/(end-start)*(W-L-R),y=v=>T+(high-v)/(high-low)*(H-T-B),width=Math.max(.6,Math.min(14,unit/(end-start)*(W-L-R)*.65));
+ let svg=`<svg class="k-chart" viewBox="0 0 ${W} ${H}" role="group" aria-label="${a.identity.symbol}真实K线与策略和基础等额买入点">`;
+ for(let i=0;i<5;i++){const v=low+(high-low)*i/4,yy=y(v);svg+=`<line x1="${L}" x2="${W-R}" y1="${yy}" y2="${yy}" stroke="#d8ded4"/><text x="${L-8}" y="${yy+4}" text-anchor="end" fill="#647069" font-size="11">${fmt(v,high<10?4:2)}</text>`;}
+ for(const b of candles){const xx=x(b[0]+unit/2),color=b[4]>=b[1]?'#b65a4b':'#4d8069';svg+=`<g><title>${localTime(b[0])} · 开 ${b[1]} 高 ${b[2]} 低 ${b[3]} 收 ${b[4]} · ${b[6]} 根小时线聚合</title><line x1="${xx}" x2="${xx}" y1="${y(b[2])}" y2="${y(b[3])}" stroke="${color}"/><rect x="${xx-width/2}" y="${Math.min(y(b[1]),y(b[4]))}" width="${width}" height="${Math.max(1,Math.abs(y(b[1])-y(b[4])))}" fill="${color}"/></g>`;}
+ for(const {o,b,i,t} of orders){for(const [record,base] of [[o,false],[b,true]]){if(record[7]||!record[4])continue;const xx=x(t)+(base?4:-4),yy=y(record[5]),r=3.3*Math.sqrt(record[2]/(report.adaptive?report.config.principal/4:report.config.center)),label=escapeHtml(`${base?'基础等额':'当前策略'} ${localTime(t)} · 本金 ${fmt(record[2],4)} USDT · 数量 ${fmt(record[4],8)} · 成交价 ${fmt(record[5],6)}`);svg+=`<g class="k-marker" role="button" tabindex="0" aria-label="${label}" data-fill="${i}"><title>${label}</title>${base?`<path d="M ${xx} ${yy-r*1.4} L ${xx+r*1.4} ${yy} L ${xx} ${yy+r*1.4} L ${xx-r*1.4} ${yy} Z" fill="#865c2b" stroke="#fffef9"/>`:`<circle cx="${xx}" cy="${yy}" r="${r}" fill="#365b3e" stroke="#fffef9"/>`}</g>`;}}
+ for(let i=0;i<=4;i++){const t=start+(end-start)*i/4;svg+=`<text x="${x(t)}" y="${H-35}" text-anchor="${i===0?'start':i===4?'end':'middle'}" fill="#647069" font-size="11">${localTime(t)}</text>`;}
+ svg+=`<text x="${W/2}" y="${H-7}" text-anchor="middle" fill="#647069" font-size="12">时间（UTC+8）</text><text transform="translate(17,190) rotate(-90)" text-anchor="middle" fill="#647069" font-size="12">价格（USDT / 单位）</text></svg>`;
+ $('candles').innerHTML=svg;
+ if(report.chart_engine&&window.DcaTradingView){window.DcaTradingView.render($('candles'),a,candles,orders,unit,start,end,showFill);}
+ $('candle-caption').textContent=`来源：币安 ${a.identity.symbol} 现货历史 · ${$('range-start').value} 至 ${$('range-end').value} · ${candles.length} 根 ${unit/HOUR} 小时 K 线，原始 ${raw.length} 根小时线；聚合以 UTC+8 对齐，缺口不补值。买入发生在小时开盘，含假设滑点；聚合K线仅作事后展示，不用于提前决策。`;
+ const totals=which=>orders.reduce((s,x)=>{const o=x[which];s.cash+=o[2]+o[3];s.units+=o[4];s.fills+=!o[7]&&o[4]>0?1:0;return s;},{cash:0,units:0,fills:0}),cur=totals('o'),base=totals('b');
+ $('range-summary').textContent=`局部窗口实际买入：策略 ${cur.fills} 次、${fmt(cur.cash,4)} USDT（含费）、${fmt(cur.units,8)} 单位；基础 ${base.fills} 次、${fmt(base.cash,4)} USDT（含费）、${fmt(base.units,8)} 单位。窗口含费单位成本：策略 ${fmt(cur.units?cur.cash/cur.units:null,6)} / 基础 ${fmt(base.units?base.cash/base.units:null,6)} USDT。`;
+ $('order-rows').innerHTML=orders.map(({o,b,i,t})=>`<tr tabindex="0" role="button" aria-label="查看 ${localTime(t)} 买入依据" data-order-row="${i}"><td>${localTime(t)}</td><td>${fmt(o[2],4)} / ${fmt(b[2],4)}</td><td>${fmt(o[4],8)} / ${fmt(b[4],8)}</td><td>${fmt(o[5]??b[5],6)}</td><td>${o[6]===null?'未计划':fmt(o[6],4)}</td><td>${escapeHtml(o[7]==='not_scheduled'?'策略未计划':o[7]||'策略模拟成交')} / ${b[7]==='not_scheduled'?'基础未计划':b[7]?'基础未成交':'基础模拟成交'}</td></tr>`).join('');
+ document.querySelectorAll('[data-fill],[data-order-row]').forEach(el=>{const select=()=>showFill(Number(el.dataset.fill??el.dataset.orderRow));el.onclick=select;el.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();select();}};});
+ if(orders.length)showFill(orders.some(x=>x.i===state.selected)?state.selected:orders[0].i);else $('selected-fill').textContent='此窗口没有评估日的计划买入，行情仍按真实数据展示。';
+}
+function renderCurve(p){
+ if(!p)return;
+ const reference=$('curve-reference').value;
+ $('reference-label').textContent=reference==='baseline'?'基础等额':'上一阶段';
+ $('chart-title').textContent=$('curve-metric').selectedOptions[0].textContent;
+ $('chart').innerHTML=chart(p.current,p[reference]);
+ $('chart-caption').textContent=`来源：币安 ${report.assets[state.asset].identity.symbol} 小时 K 线 · ${p.current.start} 至 ${p.current.end} · 同区间逐日累计；含费用、滑点与现金。净值为资金流调整 TWR，非年化。`;
+}
+function render(){
+ const a=report.assets[state.asset],edge=a.edges[state.edge],p=displayPeriod(edge.periods[state.period]),c=report.config;
+ $('assets').innerHTML=Object.entries(report.assets).map(([k,a])=>`<button role="tab" type="button" aria-selected="${k===state.asset}" data-asset="${k}">${k} <small>${escapeHtml(a.identity.name)}</small></button>`).join('');
+ document.querySelectorAll('[data-asset]').forEach(b=>b.onclick=()=>{state.asset=b.dataset.asset;state.edge=0;render();});
+ $('identity-label').textContent=state.asset+' / BINANCE SPOT';$('symbol').textContent=a.identity.symbol;
+ $('coverage').textContent=`真实小时数据 ${a.data.first_open.slice(0,10)} 至 ${a.data.last_close.slice(0,10)} · ${a.data.bars.toLocaleString()} 根 · 缺失 ${a.data.missing_hours} 小时`;
+ $('asset-note').textContent=state.asset==='GOOG'?'实际标的为 GOOGLB 代币化股票，不是 GOOG 股票或 GOOGL 永续；未计入代币分红等公司行动。':state.asset==='XAU'?'实际标的为 XAUT 黄金代币，不是 XAU 永续，也未替换为 PAXG。':'实际标的为 SOL 现货，不使用杠杆。';
+ $('stats').innerHTML=[['每标的日总预算',fmt(c.daily_total)+' USDT'],['每日执行批次',c.count+' 次'],[report.adaptive?'单笔中心 / 本金边界':'单笔计划本金边界',report.adaptive?'日预算 ÷ 次数 / ±'+fmt(c.max_deviation*100,0)+'%':fmt(c.center*(1-c.max_deviation))+'–'+fmt(c.center*(1+c.max_deviation))],['费用 / 滑点假设',fmt(c.fee_bps,0)+' / '+fmt(c.slippage_bps,0)+' bp']].map(([k,v])=>`<div class="stat"><span>${k}</span><b>${v}</b></div>`).join('');
+ adaptiveEvidence(edge,edge.periods[state.period]);
+ reversalEvidence(edge,edge.periods[state.period]);
+ $('experiments').innerHTML=a.edges.map((e,i)=>{const q=e.periods[state.period],d=q?.comparison;return `<tr tabindex="0" role="button" aria-label="查看${escapeHtml(e.label)}" data-edge="${i}" class="${i===state.edge?'selected':''}"><td>${escapeHtml(e.label)}<small>对照 ${escapeHtml(e.previous_label)}</small></td><td>${d?d.paired_days:'不可评估'}</td><td class="${sign(d?.mean_daily_cost_gain_bps??null)}">${d?fmt(d.mean_daily_cost_gain_bps)+' bp':'预热数据不足'}</td><td>${d?.ci95_bps?d.ci95_bps.map(v=>fmt(v)).join(' 至 ')+' bp':'不可评估'}</td><td class="${sign(d?.drawdown_delta_pp??null)}">${d?fmt(d.drawdown_delta_pp,3)+' pp':'不可评估'}</td><td>${escapeHtml(e.label_status)}</td></tr>`;}).join('');
+ document.querySelectorAll('[data-edge]').forEach(r=>{const select=()=>{state.edge=Number(r.dataset.edge);render();};r.onclick=select;r.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();select();}};});
+ $('detail-title').textContent=edge.label;
+ if(!p){$('chart').innerHTML='<p class="empty">此模块尚无足够的真实历史数据，不绘制收益曲线。</p>';$('chart-caption').textContent='预热要求：800 根 1h；趋势与波动阶段还需 1000 根完整 4h。';$('detail').innerHTML=`<p class="warning">${escapeHtml(edge.reason)}</p><p>当前保留等额基准，不缩短预热、不导入其他产品行情。</p>`;}
+ else{
+  renderCurve(p);
+  const d=p.comparison;
+  $('detail').innerHTML=`<span class="badge">${escapeHtml(edge.label_status)}</span><p class="note">${escapeHtml(edge.decision.reason)}</p>`+row('本区间',p.current.start+' 至 '+p.current.end)+row('累计含费用成本改善',fmt(d.aggregate_cost_gain_bps)+' bp')+row('相对等额基准成本改善',fmt(p.vs_equal.aggregate_cost_gain_bps)+' bp')+row('上一阶段 / 当前持仓',fmt(p.previous.quantity,6)+' / '+fmt(p.current.quantity,6))+row('当前本金 / 手续费',fmt(p.current.spent)+' / '+fmt(p.current.fees)+' USDT')+row('上一阶段 / 当前执行率',fmt(p.previous.execution_rate*100)+'% / '+fmt(p.current.execution_rate*100)+'%')+row('当前净值 / 闲置资金',fmt(p.current.equity)+' / '+fmt(p.current.cash)+' USDT')+row('上一阶段 / 当前回撤',fmt(p.previous.max_drawdown*100)+'% / '+fmt(p.current.max_drawdown*100)+'%')+'<div class="line"></div><h3>留出区间费用压力情景</h3>'+Object.entries(edge.scenarios).filter(([k])=>k!=='configured').map(([k,v])=>row(({low:'5 / 2 bp',standard:'10 / 5 bp',stress:'20 / 15 bp'})[k],fmt(v.mean_daily_cost_gain_bps)+' bp 改善')).join('');
+ }
+ renderCandles();
+ $('config').innerHTML=`<p>行情截止（不含）：<code>${escapeHtml(report.manifest.end_exclusive)}</code>；下载时间：<code>${escapeHtml(report.manifest.downloaded_at)}</code>。按时间顺序 60% / 20% / 20% 切分，金额权重固定。</p><p class="meta">当前数据 SHA-256：<code>${escapeHtml(a.data.sha256)}</code></p>`;
+ $('limitations').innerHTML=report.limitations.map(s=>`<li>${escapeHtml(s)}</li>`).join('');
+ $('footer').textContent=`研究版本 ${report.version} · 本地离线报告 · 行情来源 ${report.manifest.source} · 不构成收益保证`;
+}
+$('period').onchange=e=>{state.period=e.target.value;render();};
+['range-start','range-end','candle-unit'].forEach(id=>$(id).onchange=renderCandles);
+['curve-metric','curve-reference'].forEach(id=>$(id).onchange=()=>renderCurve(displayPeriod(report.assets[state.asset].edges[state.edge].periods[state.period])));
+$('baseline-frequency').onchange=()=>{state.selected=null;render();};
+function shiftRange(direction){const p=report.assets[state.asset].edges[state.edge].periods[state.period];if(!p)return;const lo=dayMs(p.current.start),hi=dayMs(p.current.end),width=6*DAY;let start=dayMs($('range-start').value)+direction*7*DAY;start=Math.max(lo,Math.min(start,Math.max(lo,hi-width)));$('range-start').value=dayString(start);$('range-end').value=dayString(Math.min(hi,start+width));renderCandles();}
+$('range-prev').onclick=()=>shiftRange(-1);$('range-next').onclick=()=>shiftRange(1);
+$('download').onclick=()=>{const blob=new Blob([JSON.stringify(report,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='dca-research-report.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
+render();
+</script>
+</body>
+</html>

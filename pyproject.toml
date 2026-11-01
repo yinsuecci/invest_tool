@@ -1,0 +1,15 @@
+[project]
+name = "dca-lab"
+version = "0.17.0"
+description = "Binance spot DCA research with an opt-in local execution gateway"
+requires-python = ">=3.11"
+dependencies = ["requests>=2.32,<3"]
+
+[project.scripts]
+dca-lab = "dca_lab.__main__:main"
+
+[tool.setuptools.packages.find]
+include = ["dca_lab*"]
+
+[tool.setuptools.package-data]
+dca_lab = ["*.html", "*.css", "*.js", "vendor/*.js", "vendor/source.json", "vendor/LICENSE", "vendor/NOTICE", "vendor/README.md"]

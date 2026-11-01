@@ -1,0 +1,7 @@
+prune data
+prune reports
+prune runtime
+prune private
+prune release
+prune .git
+global-exclude .env .env.* *.sqlite* *.db *.db-* *.log *.pem *.key *.p12 *.pfx *.har *.dump *.bak *.pyc
