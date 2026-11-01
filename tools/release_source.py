@@ -7,7 +7,7 @@ import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-TOP = {'README.md', 'pyproject.toml', '.gitignore', 'MANIFEST.in', 'SECURITY.md'}
+TOP = {'README.md', 'pyproject.toml', '.gitignore', 'MANIFEST.in', 'SECURITY.md', 'LICENSE'}
 DIRS = {'dca_lab', 'tests', 'tools', 'docs'}
 EXTENSIONS = {'.py', '.js', '.css', '.html', '.md', '.json', '.toml', '.in'}
 PRIVATE_PARTS = {'data', 'reports', 'runtime', 'private', 'release', 'dist', 'build',
