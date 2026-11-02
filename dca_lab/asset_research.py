@@ -146,6 +146,9 @@ def run(directory,source,output):
         market[key]={b.time:(b,f) for b,f in zip(bars,features(bars))}
         market[key]['rules']=Rules.from_symbol(info['symbols'][key])
     periods=split_days(common_days(data))
+    selection=prior.get('selection',{})
+    if selection.get('start')!=periods['development'][0][0] or selection.get('end')!=periods['development'][-1][0]:
+        raise ValueError('Source selection window must match the current development window')
     fits=fit_assets(data,market,periods['development'],sol_plan,Path(output)/'asset-search',hashes,hashlib.sha256(raw).hexdigest())
     study=deepcopy(STUDY)
     study.update(version='independent-assets-1.0',independent_assets=fits,

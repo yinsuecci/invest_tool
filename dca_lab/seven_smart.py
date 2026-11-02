@@ -37,6 +37,13 @@ def choose(development):
             'status':'有限候选开发段研究首选，非长期最优或独立验证'}
 
 
+def evaluation_periods(days, study=None):
+    periods = split_days(days)
+    if study and ('sol_targeted' in study or 'independent_assets' in study):
+        periods['full'] = periods['validation'] + periods['holdout']
+    return periods
+
+
 def evaluate(directory, output, candidates=None, opportunity_builder=None, study=None, selector=None):
     candidates = candidates or CANDIDATES
     manifest,info,data = load_dataset(directory,KEYS)
@@ -47,7 +54,7 @@ def evaluate(directory, output, candidates=None, opportunity_builder=None, study
     days = common_days(data)
     if len(days)<30:
         raise ValueError('Insufficient common real history after 800-hour warmup')
-    periods = split_days(days)
+    periods = evaluation_periods(days, study)
     market, asset_payload = {},{}
     first,last = days[0][1][0],days[-1][1][-1]
     for key,bars in data.items():

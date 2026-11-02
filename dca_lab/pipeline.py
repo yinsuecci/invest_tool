@@ -1,33 +1,23 @@
-"""Generate the full research chain in a fresh output directory."""
-
 from pathlib import Path
 
-from .sol_research import run as fit_sol
-from .asset_research import run as fit_assets
+from .chronological import run as fit_assets
 from .compact_app import build
 
 
-def generate(data, output):
+def generate(data, output, daily_total=30.):
     data = Path(data)
     output = Path(output)
     if not data.is_dir():
         raise ValueError("Download market data before generating reports")
-    # Never consume stale intermediate files from a failed or previous run.
     output.mkdir(parents=True, exist_ok=False)
-    sol = output / "sol"
     independent = output / "independent"
     app = output / "app"
-    print("[1/3] Fit SOL", flush=True)
-    fit_sol(data, sol)
-    sol_report = sol / "report.json"
-    if not sol_report.is_file():
-        raise RuntimeError("SOL stage did not produce report.json")
-    print("[2/3] Fit all seven assets", flush=True)
-    fit_assets(data, sol_report, independent)
+    print("[1/2] Evaluate all seven assets", flush=True)
+    fit_assets(data, independent, daily_total=daily_total)
     report = independent / "report.json"
     if not report.is_file():
         raise RuntimeError("Asset stage did not produce report.json")
-    print("[3/3] Build comparison page", flush=True)
+    print("[2/2] Build comparison page", flush=True)
     build(report, app)
     if not (app / "index.html").is_file():
         raise RuntimeError("Page stage did not produce index.html")

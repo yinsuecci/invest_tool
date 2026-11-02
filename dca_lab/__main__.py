@@ -15,9 +15,10 @@ from .report import render_report
 def main():
     parser = argparse.ArgumentParser(description="Binance spot DCA research. No API keys, no live trading.")
     sub = parser.add_subparsers(dest="command", required=True)
-    generate = sub.add_parser("generate", help="Fit SOL, fit seven assets, and build the comparison page")
+    generate = sub.add_parser("generate", help="Evaluate seven-asset strategies and build the comparison page")
     generate.add_argument("--data", default="data/seven-assets")
     generate.add_argument("--output", default="reports/generated")
+    generate.add_argument("--daily-total", type=float, default=30.)
     fetch = sub.add_parser("fetch", help="Download verified public spot candles")
     fetch.add_argument("--data", default="data/binance-2026-10-30")
     fetch.add_argument("--start", default="2023-01-01T00:00:00+00:00")
@@ -86,7 +87,7 @@ def main():
     if args.command == "generate":
         from .pipeline import generate as generate_all
         try:
-            paths = generate_all(args.data, args.output)
+            paths = generate_all(args.data, args.output, daily_total=args.daily_total)
         except (ValueError, FileExistsError) as exc:
             parser.error(str(exc))
         print(f"Report: {paths['report']}")

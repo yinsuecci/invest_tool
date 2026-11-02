@@ -1,6 +1,6 @@
 [project]
 name = "dca-lab"
-version = "0.17.0"
+version = "0.18.0"
 description = "Binance spot DCA research with an opt-in local execution gateway"
 requires-python = ">=3.11"
 dependencies = ["requests>=2.32,<3"]

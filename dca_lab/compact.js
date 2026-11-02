@@ -7,7 +7,10 @@ const fmt=(value,n=2)=>value===null||value===undefined?'—':Number(value).toLoc
 const signed=(value,n=2)=>(value>0?'+':'')+fmt(value,n),local=t=>new Date(t+zone).toISOString().slice(0,16).replace('T',' ');
 const dateMs=d=>Date.parse(d+'T00:00:00+08:00');
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-Object.entries(report.policies).forEach(([value,label])=>$('policy').add(new Option(value===report.default_policy?'逐标的策略':label,value)));
+const visiblePolicies=report.family==='chronological'?{[report.default_policy]:report.policies[report.default_policy]}:report.policies;
+Object.entries(visiblePolicies).forEach(([value,label])=>$('policy').add(new Option(value===report.default_policy?(report.family==='chronological'?'回测首选 · '+label:'逐标的策略'):label,value)));
+if(report.period_labels){$('period').replaceChildren();Object.entries(report.period_labels).forEach(([value,label])=>$('period').add(new Option(label,value)));}
+if(report.comparison_note)$('comparison-note').textContent=report.comparison_note;
 keys.forEach(k=>$('asset').add(new Option(names[k]+' · '+k,k)));
 $('policy').value=state.policy;$('asset').value=state.asset;
 function update(){
@@ -15,7 +18,7 @@ function update(){
   $('strategy-equity').textContent=fmt(a.equity)+' U';$('ordinary-equity').textContent=fmt(b.equity)+' U';
   $('strategy-profit').textContent='损益 '+signed(a.profit)+' U';$('ordinary-profit').textContent='损益 '+signed(b.profit)+' U';
   $('equity-delta').textContent=signed(a.equity-b.equity)+' U';$('equity-delta').className=a.equity>=b.equity?'positive':'negative';
-  $('same-budget').textContent='各投入 '+fmt(a.contributed)+' U';$('date-range').textContent=a.start+' — '+a.end+' · '+a.days+'天';
+  $('same-budget').textContent='各投入 '+fmt(a.contributed)+' U'+(a.average_daily_spend!==undefined?' · 日均买入 '+fmt(a.average_daily_spend)+' U':'');$('date-range').textContent=a.start+' — '+a.end+' · '+a.days+'天';
   $('cost-rows').innerHTML=keys.map(k=>{const x=a.assets[k],y=b.assets[k],gain=x.unit_cost&&y.unit_cost?(1-x.unit_cost/y.unit_cost)*100:null;
     const count=r=>r.orders.filter(o=>o.asset===k&&o.quantity>0).length;
     return '<tr role="button" tabindex="0" data-asset="'+k+'" aria-selected="'+(k===state.asset)+'" aria-label="查看'+k+'买点"><td title="'+esc(report.assets[k].identity.symbol)+'">'+names[k]+'</td><td>'+fmt(y.unit_cost,y.unit_cost>10000?2:4)+'</td><td>'+fmt(x.unit_cost,x.unit_cost>10000?2:4)+'</td><td class="'+(gain===null?'neutral':gain>=0?'positive':'negative')+'">'+(gain===null?'—':signed(gain)+'%')+'</td><td>'+count(a)+' / '+count(b)+'</td><td>'+fmt(x.spent+x.fees)+'</td></tr>';

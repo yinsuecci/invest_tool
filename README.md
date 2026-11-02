@@ -27,10 +27,10 @@ python -m dca_lab fetch --data data/seven-assets --assets GOOG XAU SOL BTC ETH S
 一条命令生成七标的策略方案、独立拟合报告和对比页面：
 
 ```powershell
-python -m dca_lab generate --data data/seven-assets --output reports/generated
+python -m dca_lab generate --data data/seven-assets --output reports/generated --daily-total 30
 ```
 
-输出目录需为新目录；重复运行时更换 `--output`，避免覆盖已有结果。下载行情仍使用上一节的独立命令。
+七标的合计每日入金默认为 30U，可通过 `--daily-total` 调整。输出目录需为新目录；重复运行时更换 `--output`，避免覆盖已有结果。下载行情仍使用上一节的独立命令。
 
 ## 启动页面
 
