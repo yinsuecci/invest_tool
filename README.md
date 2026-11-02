@@ -24,7 +24,7 @@ python -m dca_lab fetch --data data/seven-assets --assets GOOG XAU SOL BTC ETH S
 
 ## 生成回测
 
-一条命令生成 SOL 方案、七标的独立拟合报告和对比页面：
+一条命令生成七标的策略方案、独立拟合报告和对比页面：
 
 ```powershell
 python -m dca_lab generate --data data/seven-assets --output reports/generated
