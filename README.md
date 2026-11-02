@@ -24,17 +24,18 @@ python -m dca_lab fetch --data data/seven-assets --assets GOOG XAU SOL BTC ETH S
 
 ## 生成回测
 
-按顺序执行，先生成 SOL 方案，再生成七标的独立拟合报告：
+一条命令生成 SOL 方案、七标的独立拟合报告和对比页面：
 
 ```powershell
-python -m dca_lab.sol_research --data data/seven-assets --output reports/sol
-python -m dca_lab.asset_research --data data/seven-assets --source reports/sol/report.json --output reports/independent
+python -m dca_lab generate --data data/seven-assets --output reports/generated
 ```
+
+输出目录需为新目录；重复运行时更换 `--output`，避免覆盖已有结果。下载行情仍使用上一节的独立命令。
 
 ## 启动页面
 
 ```powershell
-python -m dca_lab.compact_app --source reports/independent/report.json --output reports/app --port 59755
+python -m dca_lab.compact_app --source reports/generated/independent/report.json --output reports/generated/app --port 59755
 ```
 
 打开 <http://127.0.0.1:59755/>，使用 `Ctrl+C` 停止服务。
@@ -58,7 +59,7 @@ python -m dca_lab.compact_app --source reports/independent/report.json --output 
 如需开放真实执行选项，停止服务后重新启动：
 
 ```powershell
-python -m dca_lab.compact_app --source reports/independent/report.json --output reports/app --port 59755 --enable-live
+python -m dca_lab.compact_app --source reports/generated/independent/report.json --output reports/generated/app --port 59755 --enable-live
 ```
 
 启动和连接后仍默认为模拟，需在页面明确选择“实盘”并保存。只读密钥用于查询，真实操作需相应交易权限；不要授予提现权限。密钥仅保存在进程内存中，断开或重启后需重新连接。

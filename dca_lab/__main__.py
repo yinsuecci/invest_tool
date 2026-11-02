@@ -15,6 +15,9 @@ from .report import render_report
 def main():
     parser = argparse.ArgumentParser(description="Binance spot DCA research. No API keys, no live trading.")
     sub = parser.add_subparsers(dest="command", required=True)
+    generate = sub.add_parser("generate", help="Fit SOL, fit seven assets, and build the comparison page")
+    generate.add_argument("--data", default="data/seven-assets")
+    generate.add_argument("--output", default="reports/generated")
     fetch = sub.add_parser("fetch", help="Download verified public spot candles")
     fetch.add_argument("--data", default="data/binance-2026-10-30")
     fetch.add_argument("--start", default="2023-01-01T00:00:00+00:00")
@@ -80,7 +83,16 @@ def main():
     serve.add_argument("--output", default="reports")
     serve.add_argument("--port", type=int, default=0)
     args = parser.parse_args()
-    if args.command == "fetch":
+    if args.command == "generate":
+        from .pipeline import generate as generate_all
+        try:
+            paths = generate_all(args.data, args.output)
+        except (ValueError, FileExistsError) as exc:
+            parser.error(str(exc))
+        print(f"Report: {paths['report']}")
+        print(f"Page: {paths['app'] / 'index.html'}")
+        print(f'Run: python -m dca_lab.compact_app --source "{paths["report"]}" --output "{paths["app"]}" --port 59755')
+    elif args.command == "fetch":
         fetch_data(args.data, args.start, args.end, asset_keys=args.assets)
     elif args.command == "evaluate":
         config = Config(daily_total=args.daily_total, center=args.center, max_deviation=args.deviation, alpha=min(args.deviation, .30), min_count=args.min_count, max_count=args.max_count, fee_bps=args.fee_bps, slippage_bps=args.slippage_bps)
